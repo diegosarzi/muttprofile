@@ -1,0 +1,319 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                             "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang=en>
+
+<head>
+<title>(Sender) Profiles with Mutt</title>
+<link rev="made" href="mailto:martti.rahkila@iki.fi">
+<meta name="Location" content="http://www.iki.fi/martti.rahkila/mutt/profiles.html">
+<meta name="Author" content="Martti Rahkila">
+<meta name="Date" content="2000-05-15" scheme="yyyy-mm-dd">
+<meta name="Keywords" content="mutt, muttrc, profiles">
+<meta name="Description" content="Creating and using (sender) profiles with Mutt email client">
+<meta name=robots content="index,follow">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#3333ff" vlink="#9999ff" alink="#ccccff">
+
+<p>
+<div align="center">
+<font face="Arial,Helvetica,sans-serif">
+<h1>(Sender) Profiles with Mutt</h1>
+</div>
+<p>
+This document discusses the idea of grouping parameters into profiles and using
+them with the <a href="http://www.mutt.org">Mutt</a> email client.
+
+<h2>What is a profile?</h2>
+<p>
+The <b>profile</b> concept is a form of customizing software to meet the user's
+preferences. Simply, a profile is a group of parameters or user settings.
+
+<p>
+Even though this document focuses on sender profiles, profiles
+in general are not restricted to sending email or even the Mutt email client.
+As a matter of fact the profile concept can be applied to customizing any desired
+desired property/ies provided that the particular software includes a mechanism
+for profiles to be used.
+
+<p>
+An example of the profile concept is the Netscape WWW-browser and its "User Profiles"
+that allow several users to use the same browser software in a same computer.
+However, whereas Netscape's User Profiles are predefined, profiles with Mutt
+are not restricted in any way. In fact, a profile with Mutt is only a way to
+think of groups of parameters in muttrc, not a builtin feature or mechanism.
+Profile examples could be different color-schemes or sender profiles, described
+next.
+
+<h2>What is a sender profile?</h2>
+<p>
+A sender profile is a collection of sender-oriented parameters. A simple example would
+be the address to send replies to or perhaps the signature containing your contact information etc.
+An advanced sender profile could contain the PGP signing key to be used when sending emails,
+the filename for writing a copy of the sent message, a specialized header to be used for
+automatically filtering incoming email or even the address where the message is sent from.
+
+<p>
+So what. Are they any useful for me? you may ask.
+The sender profiles are useful for anyone who needs or wants to send email
+with different sender charateristics. If you have multiple jobs or positions like
+IT administrator, webmaster etc. the benefits are obvious. But sender profiles
+can be useful for others too: For instance, do you think it is really necessary
+to have a company signature in an email addressed to your girlfriend ;-)
+
+<h2>Creating a profile</h2>
+<p>
+First of all, you need to have Mutt working and configured properly. 
+If you are using PGP, make sure it is working as well.
+
+<p>
+Secondly, you need to define which parameters you want to include in
+your profile. Consult the Mutt <a href="http://www.mutt.org/doc/manual/">manual</a>
+if/when needed... Save these settings in a separate file and remove/
+comment out from the muttrc file. (Note! the status_format was wrapped
+for convenience. It's all one big line)
+
+<p>
+A simple <a href="http://www.acoustics.hut.fi/~mara/mutt/profile.default">example</a>:
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+# Mutt sender profile: default
+
+# Signature file
+set signature='~/.signature' 
+
+# Customized headers
+unmy_hdr *                      # remove all extra headers first.
+
+my_hdr From: Your Name &lt;your.name@some.domain&gt;
+my_hdr Reply-To: Your Name &lt;your.name@some.domain&gt;
+
+# Include the profile name in the status line
+set status_format="-%r-Mutt: %f [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? 
+Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b? %?l? %l?]---(%s/%S)-default-%>-(%P)---"
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+<a href="http://www.acoustics.hut.fi/~mara/mutt/profile.personal">Another profile</a> to be used together with the previous one:
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+# Mutt sender profile: personal
+
+# Signature file
+set signature='~/.signature-personal' 
+
+# Customized headers
+unmy_hdr *                      # remove all extra headers first.
+
+my_hdr From: Your Name &lt;your.name@some.other.domain&gt;
+my_hdr Reply-To: Your Name &lt;your.name@some.other.domain&gt;
+
+# Include the profile name in the status line
+set status_format="-%r-Mutt: %f [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? 
+Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b? %?l? %l?]---(%s/%S)-personal-%>-(%P)---"
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+A more <a href="http://www.acoustics.hut.fi/~mara/mutt/profile.complex">complex example</a>:
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+# Mutt sender profile: default
+# From, Reply-To, Fcc, Pgp sign-key, attribution, signature etc.
+#
+# The following definitions are used by muttprofile
+# NAME: name for your profile
+# DESC: description for you profile, optional
+
+set locale=""                   # system default locale ("C")
+set signature='~/.signature'    # signature file
+set indent_string="> "          # Quoting mails with this string.
+set attribution='On %{%a, %d %b %Y}, %n wrote:\n'
+set post_indent_string=""       # Footer (after quotes, before signature).
+set status_format="-%r-Mutt: %f [Msgs:%?M?%M/?%m%?n? New:%n?%?o? Old:%o?%?d? Del:%d?%?F? 
+Flag:%F?%?t? Tag:%t?%?p? Post:%p?%?b? Inc:%b? %?l? %l?]---(%s/%S)-default-%>-(%P)---"
+
+# Pretty Good Privacy (PGP):
+set pgp_sign_as="0x00000000"    # UserID/KeyID for signing
+
+# Customized headers
+unmy_hdr *                      # remove all extra headers first.
+
+my_hdr From: Your Name &lt;your.name@some.domain&gt;
+my_hdr Reply-To: Your Name &lt;your.name@some.domain&gt;
+#my_hdr Bcc: username@domain.com
+#my_hdr Organization: org
+
+set nopgp_autoencrypt           # Default (no enc)
+set nopgp_autosign              # Default (sign)
+
+fcc-hook . "=sent"              # the file to copy sent messages
+</pre>
+</td>
+</tr>
+</table>
+
+<h3>Important!</h3>
+<p>
+All sender profiles should contain the same parameters or commands, even if their
+values would be the same! This is to avoid problems when switching between
+profiles. If you load a profile, and after that, another one with only partially
+same parameters, the values for the parameters that were not included in the new
+profile, would not be affected. For instance in the examples above, the unmy_hdr
+command is given to ensure customized headers are reseted for the new profile.
+BTW: the same can be true for send-hooks as well.
+
+<p>
+Once you are ready, save the profiles in separate files. The filename doesn't
+matter, but a logical place would be under the mutt directory (~/.mutt).
+
+<h2>Using profiles</h2>
+<p>
+In order to use your new profiles, you need to load one right before you
+start a new message. This can be done easily with some Mutt macros.
+
+<h3>Macros</h3>
+<p>
+The macro definitions go to your muttrc file. First you need to load
+a default profile.
+
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+# default
+source ~/.mutt/profile.default
+
+# macros to invoke a profile
+macro   index   &lt;F10&gt;    ":source ~/.mutt/profile.default\n" "Load default profile"
+macro   index   &lt;F11&gt;    ":source ~/.mutt/profile.personal\n" "Load profile: personal"
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+These settings will allow you to load the default profile by pressing &lt;F10&gt;-key
+and personal profile with &lt;F11&gt;. If you set the status_format parameter in the
+profile, you can get the name of the active profile in the status line.
+
+<p>
+You can also make macros like this:
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+macro   index   &lt;F10&gt;    ":source ~/.mutt/profile.default\nm" "New message with default profile"
+macro   index   &lt;F11&gt;    ":source ~/.mutt/profile.default\n^fm" "New message with default profile (forget-passphrase)"
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+These settings allow you to load a profile, (forget PGP passphrase) and start a new message all in one key.
+
+<h3>Using muttprofile</h3>
+<p>
+Muttprofile is a small utility to help choosing the profile. Once set up,
+you can assing only one macro to call muttprofile, load the chosen profile
+and start a new message.
+
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+# default
+source ~/.mutt/profile.default
+
+# macro to invoke muttprofile, load the chosen profile and start a new message
+macro	index	&lt;F10&gt;	"!muttprofile\n:source ~/.mutt/profile.active\nm" "New message with profile"
+</pre>
+</td>
+</tr>
+</table>
+
+Please see the <a href="muttprofile.html">muttprofile</a> page for more examples, details
+of operation and download.
+
+<h3>Profiles and send-hooks</h3>
+<p>
+Send-hooks are one of the very powerful features of Mutt. With send-hooks
+you can make settings that will be applied when a message is sent to
+certain address/es.
+
+<p>
+Sender profiles can also be used with send-hooks. Adding something like this
+in your muttrc makes sure the profile "personal" is loaded every time
+you are sending a message to your girlfriend.
+
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+send-hook (my.girlfriend@some.domain)$ \
+        "source ~/.mutt/profile.personal\n"
+</pre>
+</td>
+</tr>
+</table>
+
+<p>
+This is very handy with mailing lists:
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+# mutt-users mailing list
+send-hook (mutt-users)$ \
+        "source ~/.mutt/profile.mutt\n"
+</pre>
+</td>
+</tr>
+</table>
+
+<h3>PGP passphrase</h3>
+<p>
+Mutt has a feature that it remembers the passphrase for the PGP signing
+key for a certain period of time (pgp_timeout) after it has been used once. If you load
+another profile with another signing key, you will get a "bad passphrase"
+error when trying to send a message. In order to avoid that, you need
+to "forget" the passphrase before sending a message. The easiest way to
+do this is by first pressing "^f" (defaul keybinding for the mutt command
+forget-passphrase) and then trying again.
+
+<p>
+At least when writing this, there is no (easy) way to automatically determine
+when it would be necessary to forget the passphrase. However, I have noticed
+that in practice this is not such a big problem. Pressing "^f" and trying
+again works really fine. Note also that automatic passphrase forgetting is
+not necessarily a blessing: if you frequently switch between profiles,
+you might not want to type passphrase every time you send a signed message.
+
+<h2>Notes</h2>
+<p>
+The settings described in this document, have been tested only with 
+Mutt versions 1.0i, 1.1.11i and 1.2i on Linux 2.2.x (RedHat 6.x).
+
+<h2>Acknowledgments</h2>
+<p>
+The people in the mutt-users mailing list gave me valuable help
+with the profiles and mutt configuration.
+
+Special thanks to Charles Curley and Matti Airas for encouragement.
+
+<p>
+<a href="http://www.acoustics.hut.fi/~mara/mutt/index.html">Martti Rahkila's Mutt Resources</a>
+
+<hr>
+URL: http://www.iki.fi/martti.rahkila/mutt/profiles.html<br>
+Last update: 2000-05-15<br>
+Author: Martti Rahkila <br>
+</body>
+</html>

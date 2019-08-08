@@ -1,0 +1,141 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                             "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang=en>
+
+<head>
+<title>Muttprofile and Perl 5.8.0</title>
+<meta name="Keywords" content="mutt, muttrc, profiles, perl 5.8.0">
+<meta name="Description" content="Muttprofile: problem with Perl 5.8.0 and fixing it">
+<meta name=robots content="index,follow">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#3333ff" vlink="#9999ff" alink="#ccccff">
+
+<p>
+<div align="center">
+<font face="Arial,Helvetica,sans-serif">
+<h1>Muttprofile and Perl 5.8.0</h1>
+</div>
+
+<p>
+Muttprofile was developed using Perl version 5.005 and it also runs nicely with 
+Perl 5.6.0 and Perl 5.6.1. However, I got some bug reports that muttprofile
+does not work with Perl 5.8.0. So, I investigated the problem and here's what
+I found and how to fix it. Please note that the problem is now history: muttprofile
+works fine with Perl 5.8.1!
+</p>
+
+<h3>Symptons</h3>
+
+<p>
+The symptons are that muttprofile gives a nasty looking error message (similar to the one below) 
+and messes up the terminal by loosing the line breaks.
+</p>
+
+<p>
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+/bin/stty: invalid argument `2d00:5:bf:8a3b:3:1c:7f:15:4:0:1:0:11:13:1a:ff:12:f:17:16:ff:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0
+                                                                         '
+                                                                          Try `/bin/stty --help' for more information.
+
+</pre>
+</td>
+</tr>
+</table>
+</p>
+
+<p>
+It turned out that the problem was related to Perl-module <b>Term::Complete</b>
+which comes with all Perl5 distributions. Muttprofile uses this module for
+taking care of the interactive selection of profiles. <b>However,
+muttprofile actually works despite the error!</b>
+</p>
+
+<h3>Solution</h3>
+
+<p>
+I managed to find the bug in Term::Complete and, luckily, it was easy to fix.
+I contacted the Perl maintainers with a fixed version and it
+was included in the Perl development tree. Fixed version is now available with
+perl 5.8.1 and later.
+</p>
+
+<h3>How can I get it to work?</h3>
+
+<p>
+You have at least three options for making muttprofile work with Perl 5.8.0:
+</p>
+
+<p>
+<b>Option 1:</b><br>
+Look for Perl 5.8.1 and install it. It includes a new version of the Term::Complete module
+which does not have the stty-problem anymore.
+</p>
+
+<p>
+<b>Option 2:</b><br>
+If you're stuck with 5.8.0 for some reason, you may use the following quick-and-dirty
+workaround:
+</p>
+
+<p>
+In your macro for calling muttprofile, add the command 'stty -raw echo' 
+after the muttprofile command. This will get the line breaks back. 
+If you want to get rid of the stty error too, redirect stderr to
+/dev/null when calling muttprofile.
+In other words use macro defition such as this:
+</p>
+
+<p>
+<table bgcolor="#ccccff">
+<tr>
+<td><pre>
+macro   index   &lt;F9&gt;     "&lt;enter-command&gt;set wait_key\n!~/bin/muttprofile 2&gt; /dev/null;stty -raw echo\n:source ~/.mutt/profile.active\n&lt;enter-command&gt;unset wait_key\n" "Call muttprofile without stty error"
+</pre>
+</td>
+</tr>
+</table>
+</p>
+
+<p>
+<b>Option 3:</b><br>
+Upgrade the Term::Complete-module manually. The fixed version is available <a href="http://www.acoustics.hut.fi/~mara/mutt/Complete.pm">here</a>. Remember to make a backup of the original version, just in case.
+</p>
+
+<p>
+I have tested these solutions with Debian but I see no reason why they wouldn't work
+on RedHat 8 or other unix systems with perl 5.8.0.
+</p>
+
+<h2>Acknowledgments</h2>
+<p>
+Thanks to Marco Fioretti of the <a href="http://www.rule-project.org/en/">RULE Project</a>
+for informing me about the problem and noticing the typo on my quick'n'dirty fix :-)
+</p>
+
+<p>
+Jarkko Hietaniemi deserves credit for helping out with the fix as well as
+his huge contributions to the Perl community.
+</p>
+
+<h2>Back to <a href="muttprofile.html">muttprofile</a></h2>
+<p>
+
+<hr>
+URL: http://www.iki.fi/martti.rahkila/mutt/muttprofile_perl580.html<br>
+Last update: 2003-11-20<br>
+Author: Martti Rahkila <br>
+</body>
+</html>
+
+
+
+
+
+
+

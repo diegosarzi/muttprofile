@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+                             "http://www.w3.org/TR/html4/loose.dtd">
+
+<html lang=en>
+
+<head>
+<title>Muttprofile</title>
+<meta name="Keywords" content="mutt, muttrc, profiles">
+<meta name="Description" content="Muttprofile is a utility to choose profiles with Mutt email client">
+<meta name=robots content="index,follow">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<meta http-equiv="Content-Style-Type" content="text/css">
+</head>
+
+<body bgcolor="#ffffff" text="#000000" link="#3333ff" vlink="#9999ff" alink="#ccccff">
+
+<p>
+<div align="center">
+<font face="Arial,Helvetica,sans-serif">
+<h1>Muttprofile</h1>
+</div>
+<p>
+Muttprofile is a utility to choose <a href="profiles.html">profiles</a> with the 
+<a href="http://www.acoustics.hut.fi/~mara/mutt/index.html">Mutt</a> email client. It is useful at least in the following
+cases:
+
+<ul>
+<li>You have so many profiles that it is hard to find convenient key mappings
+to load them (Mutt does make extensive use of the keyboard already :-)
+<li>You have so many profiles that is is hard to remember how many of them
+you actually have or what are they for?
+<li>If you prefer choosing profiles interactively rather than using keyboard shortcuts.
+</ul>
+
+<p>
+Muttprofile was written in <a href="http://www.perl.com">Perl</a>. It is 
+distributed under <a href="http://www.gnu.org/copyleft/gpl.html">GNU General 
+Public Licence</a> (same as Mutt itself).
+
+<h2>Latest news</h2>
+<p>
+<b>(2003-11-18)</b> Version 1.0.1 has been released. It includes a couple of
+bugfixes.
+</p>
+
+<h2>Version history</h2>
+<p>
+<table border="2">
+<tr>
+<td valign="top">1.0.1 (current)</td>
+<td valign="top">2000-11-20</td>
+<td valign="top">Two bugfixes, details can be found from<br>
+<a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=218957">http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=218957</a><br>
+<a href="http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=218960">http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=218960</a><br>
+
+<p>Additional bugfix regarding a case when active profile
+exist but is a file instead of symlink.</p>
+</td>
+</tr>
+
+<tr>
+<td valign="top">1.0.0</td>
+<td valign="top">2000-05-10</td>
+<td valign="top">First public release</td>
+</tr>
+
+</table>
+
+<h2>Requirements</h2>
+<p>
+<ul>
+<li><a href="http://www.mutt.org/">Mutt</a> (obviously :-)
+<li><a href="http://www.perl.com/">Perl</a> version 5.x or later
+<li>Perl module <b>Term::Complete</b>, comes with Perl5 distributions
+<li>Perl module <b>Getopt::Long</b>, comes with Perl5 distributions
+</ul>
+
+<p>Please note that the <code>Term::Complete</code> module in Perl 5.8.0
+may produce an error. This has been fixed in Perl 5.8.1.
+If you are stuck with perl 5.8.0, I have a 
+<a href="muttprofile_perl580.html">separate page</a> explaining
+the problem and how to fix it.
+</p>
+
+<p>
+Muttprofile is a somewhat Unix-oriented tool in its
+command-line operation. It also makes use of symbolic links.
+I don't know if it works under other operating systems.
+</p>
+
+
+<h2>Download</h2>
+<p>
+<a href="http://www.acoustics.hut.fi/~mara/mutt/muttprofile">Download muttprofile version 1.0.1</a> (14 kB)
+</p>
+
+<p>
+<a href="http://packages.debian.org/unstable/mail/muttprofile.html">Debian package</a><br>
+</p>
+
+
+<h2>Installation</h2>
+<p>
+Muttprofile itself requires no special installation but you might want to check the first line of 
+the file (<code>#!/usr/bin/perl -w</code>)
+and change the path to perl if needed (<code>'which perl'</code> might be useful here :-)
+
+<p>
+After that you need to tell Mutt how to call muttprofile and load the active profile.
+
+Perhaps the easiest way to invoke muttprofile from mutt is to bind a
+key with mutt macro command. For example, adding this to your <b>muttrc</b>-file
+
+<p>
+<pre><b>
+macro	index	&lt;F10&gt;	"!muttprofile\n:source ~/.mutt/profile.active\n" "Call muttprofile and load profile"
+</b></pre>
+binds the function key &lt;F10&gt; to call muttprofile and load the new active profile.
+
+<p>
+Other examples:
+<p>
+<pre><b>
+macro	index	&lt;F10&gt;	"!muttprofile\n:source ~/.mutt/profile.active\n^f" "Call muttprofile, load profile and forget PGP passphrase"
+</b></pre>
+binds the function key &lt;F10&gt; to call muttprofile, load the new active profile and tells
+Mutt to forget the currently active PGP passphrase.
+
+<p>
+<pre><b>
+macro	index	&lt;F10&gt;	"!muttprofile\n:source ~/.mutt/profile.active\n^fm" "New message with profile"
+</b></pre>
+binds the function key &lt;F10&gt; to start muttprofile, load the profile, forget the PGP
+passphrase and start a new message.
+
+<p>
+In the profile files, you may want to add the following:
+<pre>
+# NAME: name for your profile
+# DESC: description of you profile, optional
+</pre>
+
+<p>
+In the interactive mode, muttprofile displays these to help you choose a profile.
+If they are missing, filename is used instead of the NAME. DESC is optional.
+
+<h2>Documentation</h2>
+<p>
+Dodumentation is included in POD format. You can read it
+using <code>perldoc -F muttprofile</code>.
+
+<p>
+For convenience, you can find the corresponding man page here:
+<tt>muttprofile(1)</tt>
+
+<p>
+<b>Short summary</b>:<br>
+muttprofile looks for profile files in your mutt directory, reads
+NAME and DESC keywords, let's you choose a profile based on those
+and finally creates a symbolic
+link that points to that profile file. Thus Mutt only needs
+to load one profile (the active profile).
+
+<h2>Future development</h2>
+<p>
+At the moment, muttprofile is what it is and stays that way. 
+If necessary (propably not) I'll try to keep it functional with 
+new versions of Mutt and Perl.
+</p>
+
+<h2>Acknowledgments</h2>
+
+<p>
+Martin F. Krafft maintains a <a href="http://packages.debian.org/unstable/mail/muttprofile.html">Debian package</a> of muttprofile. Ha has also helped and encouraged me a lot.
+</p>
+
+<p>
+Martin Schulze found two bugs in muttprofile and provided fixes as well. 
+For details, see the
+<a href="http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=muttprofile">
+Debian Bug Reoprt logs</a>. These fixes are now included in the 1.0.1 release.
+</p>
+
+<p>
+Matti Airas helped me a lot when first writing muttprofile: for example he suggested 
+the idea of using symlinks and to use NAME and DESC keys in the profiles.
+He also introduced me to Mutt :-)
+
+<p>
+Rikard Florin continued work with muttprofile. He rewrote
+muttprofile to include a graphical user interface. Unfortunately,
+his version seems to be no longer available. It used to be
+<a href="http://www.ratblast.net/muttprofile/">here</a>.
+
+<p>
+The people in the mutt-users mailing list gave me valuable help
+with mutt configuration.
+
+<h2>See also</h2>
+<p>
+<a href="profiles.html">Information on (Sender) profiles with Mutt</a><br>
+<a href="http://www.acoustics.hut.fi/~mara/mutt/index.html">Martti Rahkila's Mutt Resources</a>
+
+<hr>
+URL: http://www.iki.fi/martti.rahkila/mutt/muttprofile.html<br>
+Last update: 2003-11-20<br>
+Author: Martti Rahkila <br>
+</body>
+</html>
